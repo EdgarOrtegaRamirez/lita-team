@@ -6,6 +6,7 @@ describe Lita::Handlers::Team, lita_handler: true do
     it { is_expected.to route_command("delete testing team").to(:delete_team) }
     it { is_expected.to route_command("list teams").to(:list_teams) }
     it { is_expected.to route_command("testing team add person").to(:add_member_to_team) }
+    it { is_expected.to route_command("testing team remove person").to(:remove_member_from_team) }
   end
 
   describe "create team" do
@@ -99,6 +100,49 @@ describe Lita::Handlers::Team, lita_handler: true do
     context "team does not exist" do
       it "does not add the member" do
         send_command "testing team add john"
+        expect(replies.last).to eq("testing team does not exist")
+      end
+    end
+  end
+
+  describe "remove member from team" do
+    it "removes a member from the team" do
+      send_command "create testing team"
+      send_command "testing team add john"
+      send_command "testing team remove john"
+      expect(replies.last).to eq("john removed from the testing team")
+    end
+
+    context "me" do
+      it "removes current user from the team" do
+        send_command "create testing team"
+        send_command "testing team add me"
+        send_command "testing team remove me"
+        expect(replies.last).to eq("#{user.name} removed from the testing team")
+      end
+    end
+
+    context "there are two or more members in the team" do
+      it "adds the member and shows a message" do
+        send_command "create testing team"
+        send_command "testing team add john"
+        send_command "testing team add james"
+        send_command "testing team remove john"
+        expect(replies.last).to eq("john removed from the testing team, 1 remaining")
+      end
+    end
+
+    context "the member is not in the team" do
+      it "does not removes the member from the team" do
+        send_command "create testing team"
+        send_command "testing team remove john"
+        expect(replies.last).to eq("john already out of the testing team")
+      end
+    end
+
+    context "team does not exist" do
+      it "does not add the member" do
+        send_command "testing team remove john"
         expect(replies.last).to eq("testing team does not exist")
       end
     end

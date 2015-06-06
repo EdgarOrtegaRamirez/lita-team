@@ -28,6 +28,9 @@ module Lita
       route(/(\S*)? team add (\S*)/i, :add_member_to_team, command: true, help: {
         "<name> team add <user>" => "add me or <user> to team"
       })
+      route(/(\S*)? team remove (\S*)/i, :remove_member_from_team, command: true, help: {
+        "<name> team remove <user>" => "remove me or <user> from team"
+      })
 
       def create_team(response)
         team = Lita::Team.new(response.match_data[1])
@@ -66,11 +69,11 @@ module Lita
       def add_member_to_team(response)
         team = Lita::Team.new(response.match_data[1])
         if redis.exists(team.key)
-          user_name = if "me" == response.match_data[2]
-                        response.user.name
-                      else
-                        response.match_data[2]
-                      end
+          user = if "me" == response.match_data[2]
+                   response.user.name
+                 else
+                   response.match_data[2]
+                 end
           count_was = redis.scard(team.members_key)
           extra_message = if 0 == count_was
                             ""
@@ -79,13 +82,36 @@ module Lita
                           else
                             ", #{count_was} others are in"
                           end
-          if redis.sadd(team.members_key, user_name)
-            response.reply "#{user_name} added to the #{team.display_name}#{extra_message}"
+          if redis.sadd(team.members_key, user)
+            response.reply "#{user} added to the #{team.display_name}#{extra_message}"
           else
-            response.reply "#{user_name} already in the #{team.display_name}"
+            response.reply "#{user} already in the #{team.display_name}"
           end
         else
-          response.reply "#{team.display_name} does not exist"
+          response.reply t(:team_not_found, name: team.display_name)
+        end
+      end
+
+      def remove_member_from_team(response)
+        team = Lita::Team.new(response.match_data[1])
+        if redis.exists(team.key)
+          user = if "me" == response.match_data[2]
+                   response.user.name
+                 else
+                   response.match_data[2]
+                 end
+          if redis.srem(team.members_key, user)
+            remaining = redis.scard(team.members_key)
+            if 0 == remaining
+              response.reply "#{user} removed from the #{team.display_name}"
+            else
+              response.reply "#{user} removed from the #{team.display_name}, #{remaining} remaining"
+            end
+          else
+            response.reply "#{user} already out of the #{team.display_name}"
+          end
+        else
+          response.reply t(:team_not_found, name: team.display_name)
         end
       end
     end

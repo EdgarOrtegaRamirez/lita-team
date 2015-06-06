@@ -2,3 +2,4 @@ en:
   lita:
     handlers:
       team:
+        team_not_found: "%{name} does not exist"
