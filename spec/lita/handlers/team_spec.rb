@@ -5,6 +5,7 @@ describe Lita::Handlers::Team, lita_handler: true do
     it { is_expected.to route_command("create testing team").to(:create_team) }
     it { is_expected.to route_command("delete testing team").to(:delete_team) }
     it { is_expected.to route_command("list teams").to(:list_teams) }
+    it { is_expected.to route_command("testing team add person").to(:add_member_to_team) }
   end
 
   describe "create team" do
@@ -48,6 +49,57 @@ describe Lita::Handlers::Team, lita_handler: true do
       it "shows a message" do
         send_command "list teams"
         expect(replies.last).to eq("No team has been created so far")
+      end
+    end
+  end
+
+  describe "add member to team" do
+    it "adds a member to the team" do
+      send_command "create testing team"
+      send_command "testing team add john"
+      expect(replies.last).to eq("john added to the testing team")
+    end
+
+    context "me" do
+      it "adds current user to the team" do
+        send_command "create testing team"
+        send_command "testing team add me"
+        expect(replies.last).to eq("#{user.name} added to the testing team")
+      end
+    end
+
+    context "there is a member in the team" do
+      it "adds the member and shows a message" do
+        send_command "create testing team"
+        send_command "testing team add john"
+        send_command "testing team add james"
+        expect(replies.last).to eq("james added to the testing team, 1 other is in")
+      end
+    end
+
+    context "there are two or more members in the team" do
+      it "adds the member and shows a message" do
+        send_command "create testing team"
+        send_command "testing team add john"
+        send_command "testing team add james"
+        send_command "testing team add robert"
+        expect(replies.last).to eq("robert added to the testing team, 2 others are in")
+      end
+    end
+
+    context "the member is already in the team" do
+      it "does not add the member to the team" do
+        send_command "create testing team"
+        send_command "testing team add john"
+        send_command "testing team add john"
+        expect(replies.last).to eq("john already in the testing team")
+      end
+    end
+
+    context "team does not exist" do
+      it "does not add the member" do
+        send_command "testing team add john"
+        expect(replies.last).to eq("testing team does not exist")
       end
     end
   end

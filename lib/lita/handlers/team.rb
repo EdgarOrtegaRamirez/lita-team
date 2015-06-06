@@ -4,6 +4,10 @@ module Lita
       "team:#{name}"
     end
 
+    def members_key
+      "#{key}:members"
+    end
+
     def display_name
       "#{name} team"
     end
@@ -20,6 +24,9 @@ module Lita
       })
       route(/list teams/i, :list_teams, command: true, help: {
         "list teams" => "list all teams"
+      })
+      route(/(\S*)? team add (\S*)/i, :add_member_to_team, command: true, help: {
+        "<name> team add <user>" => "add me or <user> to team"
       })
 
       def create_team(response)
@@ -53,6 +60,32 @@ module Lita
             message << "#{team["name"]}\n"
           end
           response.reply(message)
+        end
+      end
+
+      def add_member_to_team(response)
+        team = Lita::Team.new(response.match_data[1])
+        if redis.exists(team.key)
+          user_name = if "me" == response.match_data[2]
+                        response.user.name
+                      else
+                        response.match_data[2]
+                      end
+          count_was = redis.scard(team.members_key)
+          extra_message = if 0 == count_was
+                            ""
+                          elsif 1 == count_was
+                            ", 1 other is in"
+                          else
+                            ", #{count_was} others are in"
+                          end
+          if redis.sadd(team.members_key, user_name)
+            response.reply "#{user_name} added to the #{team.display_name}#{extra_message}"
+          else
+            response.reply "#{user_name} already in the #{team.display_name}"
+          end
+        else
+          response.reply "#{team.display_name} does not exist"
         end
       end
     end
