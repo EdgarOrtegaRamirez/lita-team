@@ -2,4 +2,16 @@ en:
   lita:
     handlers:
       team:
+        teams_title: "Teams:"
+        no_teams_has_been_created: "No team has been created so far"
         team_not_found: "%{name} does not exist"
+        team_created: "%{name} created, add some people to it"
+        team_deleted: "%{name} deleted"
+        team_already_exists: "%{name} already exists"
+        member_already_in_team: "%{user} already in the %{team}"
+        member_added_to_team: "%{user} added to the %{team}"
+        members_in_team:
+          one: ", 1 other is in"
+          other: ", %{count} others are in"
+        member_already_out_of_team: "%{user} already out of the %{team}"
+        member_removed_from_team: "%{user} removed from the %{team}"

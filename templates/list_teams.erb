@@ -1,0 +1,9 @@
+<% if @teams.empty? %>
+<%= I18n.translate("lita.handlers.team.no_teams_has_been_created") %>
+<% else %>
+<%= I18n.translate("lita.handlers.team.teams_title") %>
+
+<% @teams.each do |team| %>
+<%= team.name %>
+<% end %>
+<% end %>

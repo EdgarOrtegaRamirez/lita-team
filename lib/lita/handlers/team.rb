@@ -35,10 +35,10 @@ module Lita
       def create_team(response)
         team = Lita::Team.new(response.match_data[1])
         if redis.exists(team.key)
-          response.reply "#{team.display_name} already exists"
+          response.reply t(:team_already_exists, name: team.display_name)
         else
           redis.hset(team.key, :name, team.name)
-          response.reply "#{team.display_name} created, add some people to it"
+          response.reply t(:team_created, name: team.display_name)
         end
       end
 
@@ -46,24 +46,19 @@ module Lita
         team = Lita::Team.new(response.match_data[2])
         if redis.exists(team.key)
           redis.del team.key
-          response.reply "#{team.display_name} deleted"
+          response.reply t(:team_deleted, name: team.display_name)
         else
-          response.reply "#{team.display_name} does not exist"
+          response.reply t(:team_not_found, name: team.display_name)
         end
       end
 
       def list_teams(response)
         keys = redis.keys "team*"
-        if keys.empty?
-          response.reply "No team has been created so far"
-        else
-          message = "Teams:\n"
-          keys.each do |key|
-            team = redis.hgetall(key)
-            message << "#{team["name"]}\n"
-          end
-          response.reply(message)
+        teams = keys.map do |key|
+          team_data = redis.hgetall(key)
+          Lita::Team.new(team_data["name"])
         end
+        response.reply render_template(:list_teams, teams: teams)
       end
 
       def add_member_to_team(response)
@@ -75,17 +70,12 @@ module Lita
                    response.match_data[2]
                  end
           count_was = redis.scard(team.members_key)
-          extra_message = if 0 == count_was
-                            ""
-                          elsif 1 == count_was
-                            ", 1 other is in"
-                          else
-                            ", #{count_was} others are in"
-                          end
           if redis.sadd(team.members_key, user)
-            response.reply "#{user} added to the #{team.display_name}#{extra_message}"
+            message = t(:member_added_to_team, user: user, team: team.display_name)
+            message << t(:members_in_team, count: count_was) if count_was > 0
+            response.reply message
           else
-            response.reply "#{user} already in the #{team.display_name}"
+            response.reply t(:member_already_in_team, user: user, team: team.display_name)
           end
         else
           response.reply t(:team_not_found, name: team.display_name)
@@ -102,13 +92,11 @@ module Lita
                  end
           if redis.srem(team.members_key, user)
             remaining = redis.scard(team.members_key)
-            if 0 == remaining
-              response.reply "#{user} removed from the #{team.display_name}"
-            else
-              response.reply "#{user} removed from the #{team.display_name}, #{remaining} remaining"
-            end
+            message = t(:member_removed_from_team, user: user, team: team.display_name)
+            message << t(:members_in_team, count: remaining) if remaining > 0
+            response.reply message
           else
-            response.reply "#{user} already out of the #{team.display_name}"
+            response.reply t(:member_already_out_of_team, user: user, team: team.display_name)
           end
         else
           response.reply t(:team_not_found, name: team.display_name)
