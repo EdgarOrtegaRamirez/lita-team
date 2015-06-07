@@ -43,8 +43,9 @@ describe Lita::Handlers::Team, lita_handler: true do
   describe "list teams" do
     it "list all teams" do
       send_command "create testing team"
+      send_command "create qa team"
       send_command "list teams"
-      expect(replies.last).to eq("Teams:\ntesting")
+      expect(replies.last).to eq("Teams:\nqa\ntesting\n")
     end
 
     context "without teams" do
