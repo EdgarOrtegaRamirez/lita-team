@@ -10,6 +10,8 @@ describe Lita::Handlers::Team, lita_handler: true do
     it { is_expected.to route_command("testing team add me").to(:add_member_to_team) }
     it { is_expected.to route_command("testing team +1").to(:add_member_to_team) }
     it { is_expected.to route_command("testing team remove person").to(:remove_member_from_team) }
+    it { is_expected.to route_command("testing team remove me").to(:remove_member_from_team) }
+    it { is_expected.to route_command("testing team -1").to(:remove_member_from_team) }
     it { is_expected.to route_command("testing team list").to(:list_team) }
     it { is_expected.to route_command("testing team show").to(:list_team) }
     it { is_expected.to route_command("testing team clear").to(:clear_team) }
@@ -134,6 +136,15 @@ describe Lita::Handlers::Team, lita_handler: true do
         send_command "create testing team"
         send_command "testing team add me"
         send_command "testing team remove me"
+        expect(replies.last).to eq("#{user.name} removed from the testing team")
+      end
+    end
+
+    context "-1" do
+      it "removes current user from the team" do
+        send_command "create testing team"
+        send_command "testing team +1"
+        send_command "testing team -1"
         expect(replies.last).to eq("#{user.name} removed from the testing team")
       end
     end

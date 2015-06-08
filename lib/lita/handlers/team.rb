@@ -17,8 +17,10 @@ module Lita
         "<name> team add me" => "add me to team",
         "<name> team add <user>" => "add user to team",
       })
-      route(/(\S*)? team remove (\S*)/i, :remove_member_from_team, command: true, help: {
-        "<name> team remove <user>" => "remove me or <user> from team"
+      route(/(\S*)? team (-1|remove me|remove (\S*))/i, :remove_member_from_team, command: true, help: {
+        "<name> team -1" => "remove me from team",
+        "<name> team remove me" => "remove me from team",
+        "<name> team remove <user>" => "remove <user> from team",
       })
       route(/(\S*)? team (list|show)/i, :list_team, command: true, help: {
         "<name> team list" => "list the people in the team",
@@ -77,11 +79,7 @@ module Lita
       def remove_member_from_team(response)
         team = Lita::Team.new(response.match_data[1])
         if redis.exists(team.key)
-          user = if "me" == response.match_data[2]
-                   response.user.name
-                 else
-                   response.match_data[2]
-                 end
+          user = response.match_data[3] ? response.match_data[3] : response.user.name
           if redis.srem(team.members_key, user)
             remaining = redis.scard(team.members_key)
             message = t(:member_removed_from_team, user: user, team: team.display_name)
