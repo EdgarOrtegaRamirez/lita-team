@@ -40,11 +40,10 @@ module Lita
 
       def create_team(response)
         team = Lita::Team.new(response.match_data[1])
-        if redis.exists(team.key)
-          response.reply t(:team_already_exists, name: team.display_name)
-        else
-          redis.hset(team.key, :name, team.name)
+        if redis.hsetnx(team.key, :name, team.name)
           response.reply t(:team_created, name: team.display_name)
+        else
+          response.reply t(:team_already_exists, name: team.display_name)
         end
       end
 
