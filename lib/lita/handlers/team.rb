@@ -12,8 +12,10 @@ module Lita
       route(/list teams/i, :list_teams, command: true, help: {
         "list teams" => "list all teams"
       })
-      route(/(\S*)? team add (\S*)/i, :add_member_to_team, command: true, help: {
-        "<name> team add <user>" => "add me or <user> to team"
+      route(/(\S*)? team (\+1|add me|add (\S*))/i, :add_member_to_team, command: true, help: {
+        "<name> team +1" => "add me to team",
+        "<name> team add me" => "add me to team",
+        "<name> team add <user>" => "add user to team",
       })
       route(/(\S*)? team remove (\S*)/i, :remove_member_from_team, command: true, help: {
         "<name> team remove <user>" => "remove me or <user> from team"
@@ -58,11 +60,7 @@ module Lita
       def add_member_to_team(response)
         team = Lita::Team.new(response.match_data[1])
         if redis.exists(team.key)
-          user = if "me" == response.match_data[2]
-                   response.user.name
-                 else
-                   response.match_data[2]
-                 end
+          user = response.match_data[3] ? response.match_data[3] : response.user.name
           count_was = redis.scard(team.members_key)
           if redis.sadd(team.members_key, user)
             message = t(:member_added_to_team, user: user, team: team.display_name)
