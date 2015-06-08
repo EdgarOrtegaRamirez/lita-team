@@ -6,7 +6,8 @@ module Lita
         "create <name> team" => "create team called <name>"
       })
       route(/(delete|remove) (\S*) team/i, :delete_team, command: true, help: {
-        "(delete|remove) <name> team" => "delete team called <name>"
+        "delete <name> team" => "delete team called <name>",
+        "remove <name> team" => "delete team called <name>",
       })
       route(/list teams/i, :list_teams, command: true, help: {
         "list teams" => "list all teams"
@@ -18,10 +19,12 @@ module Lita
         "<name> team remove <user>" => "remove me or <user> from team"
       })
       route(/(\S*)? team (list|show)/i, :list_team, command: true, help: {
-        "<name> team (list|show)" => "list the people in the team"
+        "<name> team list" => "list the people in the team",
+        "<name> team show" => "list the people in the team",
       })
       route(/(\S*)? team (clear|empty)/i, :clear_team, command: true, help: {
-        "<name> team (clear|empty)" => "clear team list"
+        "<name> team clear" => "clear team list",
+        "<name> team empty" => "clear team list",
       })
 
       def create_team(response)
