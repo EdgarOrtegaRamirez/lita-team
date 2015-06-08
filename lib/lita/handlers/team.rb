@@ -5,7 +5,7 @@ module Lita
     end
 
     def members_key
-      "#{key}:members"
+      "members:#{name}"
     end
 
     def display_name
