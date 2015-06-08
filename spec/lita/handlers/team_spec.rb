@@ -4,10 +4,14 @@ describe Lita::Handlers::Team, lita_handler: true do
   describe "routes" do
     it { is_expected.to route_command("create testing team").to(:create_team) }
     it { is_expected.to route_command("delete testing team").to(:delete_team) }
+    it { is_expected.to route_command("remove testing team").to(:delete_team) }
     it { is_expected.to route_command("list teams").to(:list_teams) }
     it { is_expected.to route_command("testing team add person").to(:add_member_to_team) }
     it { is_expected.to route_command("testing team remove person").to(:remove_member_from_team) }
     it { is_expected.to route_command("testing team list").to(:list_team) }
+    it { is_expected.to route_command("testing team show").to(:list_team) }
+    it { is_expected.to route_command("testing team clear").to(:clear_team) }
+    it { is_expected.to route_command("testing team empty").to(:clear_team) }
   end
 
   describe "create team" do
@@ -170,6 +174,24 @@ describe Lita::Handlers::Team, lita_handler: true do
     context "team does not exist" do
       it "shows a message" do
         send_command "testing team list"
+        expect(replies.last).to eq("testing team does not exist")
+      end
+    end
+  end
+
+  describe "clear team" do
+    it "removes the members of a team" do
+      send_command "create testing team"
+      send_command "testing team add john"
+      send_command "testing team clear"
+      expect(replies.last).to eq("testing team cleared")
+      send_command "testing team list"
+      expect(replies.last).to eq("There is no one in the testing team currently")
+    end
+
+    context "team does not exist" do
+      it "shows a message" do
+        send_command "testing team clear"
         expect(replies.last).to eq("testing team does not exist")
       end
     end

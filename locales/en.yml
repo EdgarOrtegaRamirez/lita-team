@@ -15,4 +15,5 @@ en:
           other: ", %{count} others are in"
         member_already_out_of_team: "%{user} already out of the %{team}"
         member_removed_from_team: "%{user} removed from the %{team}"
-        empty_team: "There is no one in the %{team} currently"
+        team_empty: "There is no one in the %{team} currently"
+        team_cleared: "%{name} cleared"

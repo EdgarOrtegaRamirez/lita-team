@@ -32,7 +32,10 @@ module Lita
         "<name> team remove <user>" => "remove me or <user> from team"
       })
       route(/(\S*)? team (list|show)/i, :list_team, command: true, help: {
-        "<name> team list" => "list the people in the team"
+        "<name> team (list|show)" => "list the people in the team"
+      })
+      route(/(\S*)? team (clear|empty)/i, :clear_team, command: true, help: {
+        "<name> team (clear|empty)" => "clear team list"
       })
 
       def create_team(response)
@@ -111,6 +114,16 @@ module Lita
         if redis.exists(team.key)
           members = redis.smembers(team.members_key)
           response.reply render_template(:list_team, team: team.display_name, members: members)
+        else
+          response.reply t(:team_not_found, name: team.display_name)
+        end
+      end
+
+      def clear_team(response)
+        team = Lita::Team.new(response.match_data[1])
+        if redis.exists(team.key)
+          redis.del(team.members_key)
+          response.reply t(:team_cleared, name: team.display_name)
         else
           response.reply t(:team_not_found, name: team.display_name)
         end
