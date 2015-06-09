@@ -1,5 +1,5 @@
 <% if @members.empty? %>
-<%= I18n.translate("lita.handlers.team.team_empty", team: @team) %>
+<%= I18n.t("lita.handlers.team.team_empty", team: @team) %>
 <% else %>
 <%= @team %> (<%= @members.count %> total):
 <% @members.each_with_index do |member, i| %>

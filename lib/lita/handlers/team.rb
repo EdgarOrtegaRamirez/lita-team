@@ -65,9 +65,7 @@ module Lita
           user = response.match_data[3] ? response.match_data[3] : response.user.name
           count_was = redis.scard(team.members_key)
           if redis.sadd(team.members_key, user)
-            message = t(:member_added_to_team, user: user, team: team.display_name)
-            message << t(:members_in_team, count: count_was) if count_was > 0
-            response.reply message
+            response.reply render_template(:member_added_to_team, user: user, team: team.display_name, count: count_was)
           else
             response.reply t(:member_already_in_team, user: user, team: team.display_name)
           end
@@ -82,9 +80,7 @@ module Lita
           user = response.match_data[3] ? response.match_data[3] : response.user.name
           if redis.srem(team.members_key, user)
             remaining = redis.scard(team.members_key)
-            message = t(:member_removed_from_team, user: user, team: team.display_name)
-            message << t(:members_in_team, count: remaining) if remaining > 0
-            response.reply message
+            response.reply render_template(:member_removed_from_team, user: user, team: team.display_name, count: remaining)
           else
             response.reply t(:member_already_out_of_team, user: user, team: team.display_name)
           end
