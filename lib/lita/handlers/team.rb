@@ -12,21 +12,21 @@ module Lita
       route(/list teams/i, :list_teams, command: true, help: {
         "list teams" => "list all teams"
       })
-      route(/(\S*)? team (\+1|add me|add (\S*))/i, :add_member_to_team, command: true, help: {
+      route(/(\S*) team (\+1|add me|add (\S*))/i, :add_member_to_team, command: true, help: {
         "<name> team +1" => "add me to team",
         "<name> team add me" => "add me to team",
         "<name> team add <user>" => "add user to team",
       })
-      route(/(\S*)? team (-1|remove me|remove (\S*))/i, :remove_member_from_team, command: true, help: {
+      route(/(\S*) team (-1|remove me|remove (\S*))/i, :remove_member_from_team, command: true, help: {
         "<name> team -1" => "remove me from team",
         "<name> team remove me" => "remove me from team",
         "<name> team remove <user>" => "remove <user> from team",
       })
-      route(/(\S*)? team (list|show)/i, :list_team, command: true, help: {
+      route(/(\S*) team (list|show)/i, :list_team, command: true, help: {
         "<name> team list" => "list the people in the team",
         "<name> team show" => "list the people in the team",
       })
-      route(/(\S*)? team (clear|empty)/i, :clear_team, command: true, help: {
+      route(/(\S*) team (clear|empty)/i, :clear_team, command: true, help: {
         "<name> team clear" => "clear team list",
         "<name> team empty" => "clear team list",
       })
