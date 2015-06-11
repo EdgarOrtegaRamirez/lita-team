@@ -32,80 +32,75 @@ module Lita
       })
 
       def create_team(response)
-        team = Lita::Team.new(response.match_data[1])
-        if redis.hsetnx(team.key, :name, team.name)
-          response.reply t(:team_created, name: team.display_name)
+        team_name = response.match_data[1]
+        if Lita::Store::Team.create(team_name)
+          response.reply t(:team_created, name: team_name)
         else
-          response.reply t(:team_already_exists, name: team.display_name)
+          response.reply t(:team_already_exists, name: team_name)
         end
       end
 
       def delete_team(response)
-        team = Lita::Team.new(response.match_data[2])
-        if redis.exists(team.key)
-          redis.del team.key
-          response.reply t(:team_deleted, name: team.display_name)
+        team_name = response.match_data[2]
+        if Lita::Store::Team.destroy(team_name)
+          response.reply t(:team_deleted, name: team_name)
         else
-          response.reply t(:team_not_found, name: team.display_name)
-        end
-      end
-
-      def list_teams(response)
-        keys = redis.keys "team*"
-        teams = keys.map do |key|
-          team_data = redis.hgetall(key)
-          Lita::Team.new(team_data["name"])
-        end
-        response.reply render_template(:list_teams, teams: teams)
-      end
-
-      def add_member_to_team(response)
-        team = Lita::Team.new(response.match_data[1])
-        if redis.exists(team.key)
-          user = response.match_data[3] || response.user.mention_name
-          count_was = redis.scard(team.members_key)
-          if redis.sadd(team.members_key, user)
-            response.reply render_template(:member_added_to_team, user: user, team: team.display_name, count: count_was)
-          else
-            response.reply t(:member_already_in_team, user: user, team: team.display_name)
-          end
-        else
-          response.reply t(:team_not_found, name: team.display_name)
-        end
-      end
-
-      def remove_member_from_team(response)
-        team = Lita::Team.new(response.match_data[1])
-        if redis.exists(team.key)
-          user = response.match_data[3] || response.user.mention_name
-          if redis.srem(team.members_key, user)
-            remaining = redis.scard(team.members_key)
-            response.reply render_template(:member_removed_from_team, user: user, team: team.display_name, count: remaining)
-          else
-            response.reply t(:member_already_out_of_team, user: user, team: team.display_name)
-          end
-        else
-          response.reply t(:team_not_found, name: team.display_name)
+          response.reply t(:team_not_found, name: team_name)
         end
       end
 
       def list_team(response)
-        team = Lita::Team.new(response.match_data[1])
-        if redis.exists(team.key)
-          members = redis.smembers(team.members_key)
-          response.reply render_template(:list_team, team: team.display_name, members: members)
+        team_name = response.match_data[1]
+        if Lita::Store::Team.exists?(team_name)
+          members = Lita::Store::Member.all(team_name: team_name)
+          response.reply render_template(:list_team, team: team_name, members: members)
         else
-          response.reply t(:team_not_found, name: team.display_name)
+          response.reply t(:team_not_found, name: team_name)
         end
       end
 
       def clear_team(response)
-        team = Lita::Team.new(response.match_data[1])
-        if redis.exists(team.key)
-          redis.del(team.members_key)
-          response.reply t(:team_cleared, name: team.display_name)
+        team_name = response.match_data[1]
+        if Lita::Store::Team.exists?(team_name)
+          Lita::Store::Member.destroy_all(team_name: team_name)
+          response.reply t(:team_cleared, name: team_name)
         else
-          response.reply t(:team_not_found, name: team.display_name)
+          response.reply t(:team_not_found, name: team_name)
+        end
+      end
+
+      def list_teams(response)
+        teams = Lita::Store::Team.all
+        response.reply render_template(:list_teams, teams: teams)
+      end
+
+      def add_member_to_team(response)
+        team_name = response.match_data[1]
+        member_name = response.match_data[3] || response.user.name
+        if Lita::Store::Team.exists?(team_name)
+          count_was = Lita::Store::Member.count(team_name: team_name)
+          if Lita::Store::Member.create(member_name: member_name, team_name: team_name)
+            response.reply render_template(:member_added_to_team, user: member_name, team: team_name, count: count_was)
+          else
+            response.reply t(:member_already_in_team, user: member_name, team: team_name)
+          end
+        else
+          response.reply t(:team_not_found, name: team_name)
+        end
+      end
+
+      def remove_member_from_team(response)
+        team_name = response.match_data[1]
+        member_name = response.match_data[3] || response.user.name
+        if Lita::Store::Team.exists?(team_name)
+          if Lita::Store::Member.destroy(member_name: member_name, team_name: team_name)
+            remaining = Lita::Store::Member.count(team_name: team_name)
+            response.reply render_template(:member_removed_from_team, user: member_name, team: team_name, count: remaining)
+          else
+            response.reply t(:member_already_out_of_team, user: member_name, team: team_name)
+          end
+        else
+          response.reply t(:team_not_found, name: team_name)
         end
       end
     end

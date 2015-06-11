@@ -1,5 +1,5 @@
 module Lita
-  class Team
+  class Member
     attr :name
 
     def initialize(name)
