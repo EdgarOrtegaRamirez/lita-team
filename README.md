@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/EdgarOrtegaRamirez/lita-team.svg?branch=master)](https://travis-ci.org/EdgarOrtegaRamirez/lita-team)
 [![Coverage Status](https://coveralls.io/repos/EdgarOrtegaRamirez/lita-team/badge.svg?branch=master)](https://coveralls.io/r/EdgarOrtegaRamirez/lita-team?branch=master)
+[![Code Climate](https://codeclimate.com/github/EdgarOrtegaRamirez/lita-team/badges/gpa.svg)](https://codeclimate.com/github/EdgarOrtegaRamirez/lita-team)
 
 Create and manage the members of a team with Lita
 
