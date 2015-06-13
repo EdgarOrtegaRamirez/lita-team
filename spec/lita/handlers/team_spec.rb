@@ -53,7 +53,7 @@ describe Lita::Handlers::Team, lita_handler: true do
       send_command "create testing team"
       send_command "create qa team"
       send_command "list teams"
-      expect(replies.last).to eq("Teams:\nqa\ntesting\n")
+      expect(replies.last).to eq("Teams:\nqa (0 members)\ntesting (0 members)\n")
     end
 
     context "without teams" do
@@ -178,10 +178,10 @@ describe Lita::Handlers::Team, lita_handler: true do
   describe "list team" do
     it "lists the members in the team" do
       send_command "create testing team"
-      send_command "testing team add john"
       send_command "testing team add james"
+      send_command "testing team add john"
       send_command "testing team list"
-      expect(replies.last).to eq("testing team (2 total):\n1. james\n2. john\n")
+      expect(replies.last).to eq("testing (2 members):\n1. james\n2. john\n")
     end
 
     context "team is empty" do

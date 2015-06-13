@@ -4,7 +4,7 @@
 <%= I18n.t("lita.handlers.team.teams_title") %>
 
 <% @teams.each do |team| %>
-<%= team.name %>
+<%= I18n.t("lita.handlers.team.team_summary", name: team.name, count: team.members.count) %>
 
 <% end %>
 <% end %>

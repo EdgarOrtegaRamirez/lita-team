@@ -34,75 +34,79 @@ module Lita
 
       def create_team(response)
         team_name = response.match_data[1]
-        if Lita::Store::Team.create(team_name)
-          response.reply t(:team_created, name: team_name)
-        else
-          response.reply t(:team_already_exists, name: team_name)
-        end
+        message = if Lita::Team.create(team_name)
+                    t(:team_created, name: team_name)
+                  else
+                    t(:team_already_exists, name: team_name)
+                  end
+        response.reply message
       end
 
       def delete_team(response)
         team_name = response.match_data[2]
-        if Lita::Store::Team.destroy(team_name)
-          response.reply t(:team_deleted, name: team_name)
-        else
-          response.reply t(:team_not_found, name: team_name)
-        end
+        message = if Lita::Team.destroy(team_name)
+                    t(:team_deleted, name: team_name)
+                  else
+                    t(:team_not_found, name: team_name)
+                  end
+        response.reply message
       end
 
       def list_team(response)
         team_name = response.match_data[1]
-        if Lita::Store::Team.exists?(team_name)
-          members = Lita::Store::Member.all(team_name: team_name)
-          response.reply render_template(:list_team, team: team_name, members: members)
-        else
-          response.reply t(:team_not_found, name: team_name)
-        end
+        message = if team = Lita::Team.find(team_name)
+                    render_template(:list_team, team: team)
+                  else
+                    t(:team_not_found, name: team_name)
+                  end
+        response.reply message
       end
 
       def clear_team(response)
         team_name = response.match_data[1]
-        if Lita::Store::Team.exists?(team_name)
-          Lita::Store::Member.destroy_all(team_name: team_name)
-          response.reply t(:team_cleared, name: team_name)
-        else
-          response.reply t(:team_not_found, name: team_name)
-        end
+        message = if Lita::Team.find(team_name)
+                    Lita::Member.destroy_all(team_name: team_name)
+                    t(:team_cleared, name: team_name)
+                  else
+                    t(:team_not_found, name: team_name)
+                  end
+        response.reply message
       end
 
       def list_teams(response)
-        teams = Lita::Store::Team.all
+        teams = Lita::Team.all
         response.reply render_template(:list_teams, teams: teams)
       end
 
       def add_member_to_team(response)
         team_name = response.match_data[1]
         member_name = response.match_data[3] || response.user.name
-        if Lita::Store::Team.exists?(team_name)
-          count_was = Lita::Store::Member.count(team_name: team_name)
-          if Lita::Store::Member.create(member_name: member_name, team_name: team_name)
-            response.reply render_template(:member_added_to_team, user: member_name, team: team_name, count: count_was)
-          else
-            response.reply t(:member_already_in_team, user: member_name, team: team_name)
-          end
-        else
-          response.reply t(:team_not_found, name: team_name)
-        end
+        message = if team = Lita::Team.find(team_name)
+                    count_was = team.members.count
+                    if Lita::Member.create(member_name: member_name, team_name: team_name)
+                      render_template(:member_added_to_team, member: member_name, team: team_name, count: count_was)
+                    else
+                      t(:member_already_in_team, member: member_name, team: team_name)
+                    end
+                  else
+                    t(:team_not_found, name: team_name)
+                  end
+        response.reply message
       end
 
       def remove_member_from_team(response)
         team_name = response.match_data[1]
         member_name = response.match_data[3] || response.user.name
-        if Lita::Store::Team.exists?(team_name)
-          if Lita::Store::Member.destroy(member_name: member_name, team_name: team_name)
-            remaining = Lita::Store::Member.count(team_name: team_name)
-            response.reply render_template(:member_removed_from_team, user: member_name, team: team_name, count: remaining)
-          else
-            response.reply t(:member_already_out_of_team, user: member_name, team: team_name)
-          end
-        else
-          response.reply t(:team_not_found, name: team_name)
-        end
+        message = if team = Lita::Team.find(team_name)
+                    if Lita::Member.destroy(member_name: member_name, team_name: team_name)
+                      render_template(:member_removed_from_team, member: member_name, team: team)
+                    else
+                      t(:member_already_out_of_team, member: member_name, team: team_name)
+                    end
+                  else
+                    t(:team_not_found, name: team_name)
+                  end
+        response.reply message
       end
     end
 

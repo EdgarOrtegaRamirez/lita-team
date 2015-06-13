@@ -7,8 +7,8 @@ module Lita
         @redis ||= Redis::Namespace.new("handlers:team:team", redis: Lita.redis)
       end
 
-      def exists?(team_name)
-        redis.exists(team_name)
+      def find(team_name)
+        redis.hgetall(team_name)
       end
 
       def create(team_name)
@@ -21,15 +21,8 @@ module Lita
 
       def all
         redis.keys.sort.map do |key|
-          data = redis.hgetall(key)
-          model.new(data["name"])
+          redis.hgetall(key)
         end
-      end
-
-      private
-
-      def model
-        Lita::Team
       end
 
     end
