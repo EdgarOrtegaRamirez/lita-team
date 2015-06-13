@@ -1,6 +1,7 @@
 module Lita
   module Handlers
-    class Team < Handler
+    class Team
+      extend Lita::Handler::ChatRouter
 
       route(/create (\S*) team/i, :create_team, command: true, help: {
         "create <name> team" => "create team called <name>"
