@@ -20,7 +20,7 @@ module Lita
       end
 
       def all
-        redis.keys.map do |key|
+        redis.keys.sort.map do |key|
           data = redis.hgetall(key)
           model.new(data["name"])
         end

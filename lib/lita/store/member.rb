@@ -26,7 +26,7 @@ module Lita
       end
 
       def all(team_name:)
-        redis.keys("#{ team_name }:*").map do |key|
+        redis.keys("#{ team_name }:*").sort.map do |key|
           data = redis.hgetall(key)
           model.new(data["name"])
         end
