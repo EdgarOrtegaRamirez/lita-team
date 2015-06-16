@@ -62,7 +62,7 @@ module Lita
       def add_member_to_team(response)
         team = Lita::Team.new(response.match_data[1])
         if redis.exists(team.key)
-          user = response.match_data[3] ? response.match_data[3] : response.user.mention_name
+          user = response.match_data[3] || response.user.mention_name
           count_was = redis.scard(team.members_key)
           if redis.sadd(team.members_key, user)
             response.reply render_template(:member_added_to_team, user: user, team: team.display_name, count: count_was)
@@ -77,7 +77,7 @@ module Lita
       def remove_member_from_team(response)
         team = Lita::Team.new(response.match_data[1])
         if redis.exists(team.key)
-          user = response.match_data[3] ? response.match_data[3] : response.user.mention_name
+          user = response.match_data[3] || response.user.mention_name
           if redis.srem(team.members_key, user)
             remaining = redis.scard(team.members_key)
             response.reply render_template(:member_removed_from_team, user: user, team: team.display_name, count: remaining)
