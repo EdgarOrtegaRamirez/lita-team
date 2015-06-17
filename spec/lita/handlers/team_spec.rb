@@ -1,23 +1,6 @@
 require "spec_helper"
 
 describe Lita::Handlers::Team, lita_handler: true do
-  describe "routes" do
-    it { is_expected.to route_command("create testing team").to(:create_team) }
-    it { is_expected.to route_command("delete testing team").to(:delete_team) }
-    it { is_expected.to route_command("remove testing team").to(:delete_team) }
-    it { is_expected.to route_command("list teams").to(:list_teams) }
-    it { is_expected.to route_command("testing team add person").to(:add_member_to_team) }
-    it { is_expected.to route_command("testing team add me").to(:add_member_to_team) }
-    it { is_expected.to route_command("testing team +1").to(:add_member_to_team) }
-    it { is_expected.to route_command("testing team remove person").to(:remove_member_from_team) }
-    it { is_expected.to route_command("testing team remove me").to(:remove_member_from_team) }
-    it { is_expected.to route_command("testing team -1").to(:remove_member_from_team) }
-    it { is_expected.to route_command("testing team list").to(:list_team) }
-    it { is_expected.to route_command("testing team show").to(:list_team) }
-    it { is_expected.to route_command("testing team clear").to(:clear_team) }
-    it { is_expected.to route_command("testing team empty").to(:clear_team) }
-  end
-
   describe "create team" do
     it "creates a new team" do
       send_command "create testing team"
@@ -53,7 +36,7 @@ describe Lita::Handlers::Team, lita_handler: true do
       send_command "create testing team"
       send_command "create qa team"
       send_command "list teams"
-      expect(replies.last).to eq("Teams:\nqa\ntesting\n")
+      expect(replies.last).to eq("Teams:\nqa (0 members)\ntesting (0 members)\n")
     end
 
     context "without teams" do
@@ -178,10 +161,10 @@ describe Lita::Handlers::Team, lita_handler: true do
   describe "list team" do
     it "lists the members in the team" do
       send_command "create testing team"
-      send_command "testing team add john"
       send_command "testing team add james"
+      send_command "testing team add john"
       send_command "testing team list"
-      expect(replies.last).to eq("testing team (2 total):\n1. james\n2. john\n")
+      expect(replies.last).to eq("testing (2 members):\n1. james\n2. john\n")
     end
 
     context "team is empty" do

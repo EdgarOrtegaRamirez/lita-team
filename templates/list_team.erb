@@ -1,9 +1,9 @@
-<% if @members.empty? %>
-<%= I18n.t("lita.handlers.team.team_empty", team: @team) %>
+<% if @team.members.empty? %>
+<%= I18n.t("lita.handlers.team.team_empty", team: @team.name) %>
 <% else %>
-<%= @team %> (<%= @members.count %> total):
-<% @members.each_with_index do |member, i| %>
-<%= i + 1 %>. <%= member %>
+<%= I18n.t("lita.handlers.team.team_summary", name: @team.name, count: @team.members.count) %>:
+<% @team.members.each_with_index do |member, i| %>
+<%= i + 1 %>. <%= member.name %>
 
 <% end %>
 <% end %>
