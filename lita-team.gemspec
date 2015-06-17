@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "lita-team"
-  spec.version       = "0.1.0"
+  spec.version       = "1.0.0"
   spec.authors       = ["Edgar Ortega"]
   spec.email         = ["edgarortegaramirez@gmail.com"]
   spec.description   = "create and manage the members of a team with Lita"
