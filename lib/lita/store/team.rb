@@ -11,6 +11,10 @@ module Lita
         redis.hgetall(team_name)
       end
 
+      def exists?(team_name)
+        redis.exists(team_name)
+      end
+
       def create(team_name)
         redis.hsetnx(team_name, :name, team_name)
       end

@@ -8,22 +8,14 @@ module Lita
 
     class << self
       def find(name)
-        data = Lita::Store::Team.find(name)
-        data.empty? ? nil : new(data["name"])
+        return nil unless Lita::Store::Team.exists?(name)
+        new(Lita::Store::Team.find(name)["name"])
       end
 
       def all
         Lita::Store::Team.all.map do |data|
           new(data["name"])
         end
-      end
-
-      def create(name)
-        Lita::Store::Team.create(name)
-      end
-
-      def destroy(name)
-        Lita::Store::Team.destroy(name)
       end
     end
 
