@@ -70,6 +70,20 @@ describe Lita::Handlers::Team, lita_handler: true do
       end
     end
 
+    context "mention" do
+      it "uses the lita users database" do
+        send_command "create testing team"
+        send_command "testing team add @Test"
+        expect(replies.last).to eq("Test User added to the testing team")
+      end
+
+      it "removes @ from non-existing users" do
+        send_command "create testing team"
+        send_command "testing team add @james"
+        expect(replies.last).to eq("james added to the testing team")
+      end
+    end
+
     context "there is a member in the team" do
       it "adds the member and shows a message" do
         send_command "create testing team"
@@ -129,6 +143,22 @@ describe Lita::Handlers::Team, lita_handler: true do
         send_command "testing team +1"
         send_command "testing team -1"
         expect(replies.last).to eq("#{user.name} removed from the testing team")
+      end
+    end
+
+    context "mention" do
+      it "uses the lita users database" do
+        send_command "create testing team"
+        send_command "testing team add @Test"
+        send_command "testing team remove @Test"
+        expect(replies.last).to eq("Test User removed from the testing team")
+      end
+
+      it "removes @ from non-existing users" do
+        send_command "create testing team"
+        send_command "testing team add @james"
+        send_command "testing team remove @james"
+        expect(replies.last).to eq("james removed from the testing team")
       end
     end
 

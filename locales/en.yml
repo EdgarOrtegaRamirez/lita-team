@@ -20,3 +20,5 @@ en:
         team_summary:
           one: "%{name} (1 member)"
           other: "%{name} (%{count} members)"
+        slack:
+          member_added_to_team: "<@%{id}|%{member}> added to the %{team} team"

@@ -3,7 +3,7 @@ module Lita
     class Base
       include Lita::Handler::Common
 
-      attr :response
+      attr_reader :response
       @@template_root = nil
 
       def initialize(response)

@@ -1,9 +1,8 @@
 module Lita
   module Actions
     class CreateTeam < Base
-
       def call
-        if Lita::Store::Team.create(team_name)
+        if Lita::TeamStore.create(team_name)
           response.reply t(:team_created, name: team_name)
         else
           response.reply t(:team_already_exists, name: team_name)
@@ -15,7 +14,6 @@ module Lita
       def team_name
         response.match_data[1]
       end
-
     end
   end
 end

@@ -1,7 +1,6 @@
 module Lita
   module Actions
     class ClearTeam < Base
-
       def call
         if team_exists?
           destroy_members
@@ -22,9 +21,8 @@ module Lita
       end
 
       def destroy_members
-        Lita::Store::Member.destroy_all(team_name: team_name)
+        Lita::MemberStore.destroy_all(team_name: team_name)
       end
-
     end
   end
 end

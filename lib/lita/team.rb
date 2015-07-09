@@ -1,27 +1,23 @@
 module Lita
   class Team
-    attr :name
+    attr_reader :name
 
-    def initialize(name)
-      @name = name
+    def initialize(attrs)
+      @name = attrs['name']
     end
 
-    class << self
-      def find(name)
-        return nil unless Lita::Store::Team.exists?(name)
-        new(Lita::Store::Team.find(name)["name"])
-      end
+    def self.find(name)
+      return nil unless Lita::TeamStore.exists?(name)
+      data = Lita::TeamStore.find(name)
+      new(data)
+    end
 
-      def all
-        Lita::Store::Team.all.map do |data|
-          new(data["name"])
-        end
-      end
+    def self.all
+      Lita::TeamStore.all.map { |data| new(data) }
     end
 
     def members
       @members ||= Lita::Member.all(team_name: name)
     end
-
   end
 end

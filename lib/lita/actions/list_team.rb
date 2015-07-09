@@ -1,7 +1,6 @@
 module Lita
   module Actions
     class ListTeam < Base
-
       def call
         if team
           response.reply render_template(:list_team, team: team)
@@ -19,7 +18,6 @@ module Lita
       def team
         @team ||= Lita::Team.find(team_name)
       end
-
     end
   end
 end
