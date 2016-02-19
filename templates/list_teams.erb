@@ -1,10 +1,4 @@
-<% if @teams.empty? %>
-<%= I18n.t("lita.handlers.team.no_teams_has_been_created") %>
-<% else %>
-<%= I18n.t("lita.handlers.team.teams_title") %>
-
+<%= I18n.t("lita.handlers.team.teams_title") %>:
 <% @teams.each do |team| %>
-<%= I18n.t("lita.handlers.team.team_summary", name: team.name, count: team.members.count) %>
-
-<% end %>
+<%= team[:name] %> (<%= team[:members].count %> :bust_in_silhouette:)
 <% end %>

@@ -1,4 +1,4 @@
-<%= I18n.t("lita.handlers.team.member_removed_from_team", member: @member, team: @team.name) %>
-<% if @team.members.count > 0 %>
-<%= I18n.t("lita.handlers.team.members_in_team", count: @team.members.count) %>
+<%= I18n.t("lita.handlers.team.member.removed", member_name: @member_name, team_name: @team_name) %>
+<% if @count > 0 %>
+<%= I18n.t("lita.handlers.team.members_count", count: @count) %>
 <% end %>

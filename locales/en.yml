@@ -2,23 +2,27 @@ en:
   lita:
     handlers:
       team:
-        teams_title: "Teams:"
+        created: "%{team_name} team created, add some people to it" 
+        updated: "%{team_name} team %{attribute} set to %{value}"
+        cannot_perform_operation: "%{team_name} team is blocked. You cannot perform this operation"
+        already_exists: "%{team_name} team already exists"
+        not_found: "%{team_name} team does not exist"
+        deleted: "%{team_name} team deleted"
         no_teams_has_been_created: "No team has been created so far"
-        team_not_found: "%{name} team does not exist"
-        team_created: "%{name} team created, add some people to it"
-        team_deleted: "%{name} team deleted"
-        team_already_exists: "%{name} team already exists"
-        member_already_in_team: "%{member} already in the %{team} team"
-        member_added_to_team: "%{member} added to the %{team} team"
-        members_in_team:
+        teams_title: "Teams"
+        blocked: "%{team_name} team blocked"
+        unblocked: "%{team_name} team unblocked"
+        cleared: "%{team_name} team cleared"
+        empty: "There is no one in the %{team_name} team currently"
+        members_count:
           one: ", 1 other is in"
           other: ", %{count} others are in"
-        member_already_out_of_team: "%{member} already out of the %{team} team"
-        member_removed_from_team: "%{member} removed from the %{team} team"
-        team_empty: "There is no one in the %{team} team currently"
-        team_cleared: "%{name} team cleared"
-        team_summary:
-          one: "%{name} (1 member)"
-          other: "%{name} (%{count} members)"
-        slack:
-          member_added_to_team: "<@%{id}|%{member}> added to the %{team} team"
+        unconfirmed_count:
+          one: ", %{count} member has not confirmed yet"
+          other: ", %{count} members have not confirmed yet"
+        member:
+          confirmed: "%{member_name} has been confirmed in the %{team_name} team"
+          already_in_team: "%{member_name} already in the %{team_name} team"
+          not_in_team: "%{member_name} is not on the %{team_name} team"
+          added: "%{member_name} added to the %{team_name} team"
+          removed: "%{member_name} removed from the %{team_name} team"

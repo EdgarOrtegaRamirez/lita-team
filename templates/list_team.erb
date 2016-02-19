@@ -1,9 +1,12 @@
-<% if @team.members.empty? %>
-<%= I18n.t("lita.handlers.team.team_empty", team: @team.name) %>
+<% if @team[:members].empty? %>
+<%= I18n.t('lita.handlers.team.empty', team_name: @team[:name]) %>
 <% else %>
-<%= I18n.t("lita.handlers.team.team_summary", name: @team.name, count: @team.members.count) %>:
-<% @team.members.each_with_index do |member, i| %>
-<%= i + 1 %>. <%= member.name %>
+<%= @team[:name] %>
+
+<%= ":bust_in_silhouette: " + @team[:members].count.to_s %><%= " | " + @team[:icon] if @team[:icon] %><%= " " + @team[:location] if @team[:location] %><%= " | Max: " + @team[:limit].to_s if @team[:limit] %>
+
+<% @team[:members].each_with_index do |(key, member), i| %>
+<%= i + 1 %>. <%= member[:name] %><%= " :point_up:" if member[:confirmed] %>
 
 <% end %>
 <% end %>
