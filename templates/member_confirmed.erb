@@ -1,0 +1,4 @@
+<%= I18n.t("lita.handlers.team.member.confirmed", member_name: @member_name, team_name: @team_name) %>
+<% if @count > 0 %>
+<%= I18n.t("lita.handlers.team.unconfirmed_count", count: @count) %>
+<% end %>

@@ -12,7 +12,7 @@ Create and manage the members of a team with Lita
 Add lita-team to your Lita instance's Gemfile:
 
 ``` ruby
-gem "lita-team"
+gem 'lita-team'
 ```
 
 ## Usage
