@@ -24,8 +24,8 @@ describe Lita::Handlers::ListTeam,
       send_command "update testing team set location best place"
       send_command "testing team list"
       reply = <<-OUTPUT
-testing
-:bust_in_silhouette: 1 | :love: best place | Max: 10
+:love: testing
+:bust_in_silhouette: 1 | :round_pushpin: best place | Max: 10
 1. melissa
 OUTPUT
       expect(replies.last).to eq(reply)
@@ -50,8 +50,12 @@ OUTPUT
       it "shows a message" do
         send_command "create testing team"
         send_command "testing team list"
-        expect(replies.last).
-          to eq("There is no one in the testing team currently")
+        reply = <<-OUTPUT
+testing
+:bust_in_silhouette: 0
+There is no one in the testing team currently
+OUTPUT
+        expect(replies.last).to eq(reply)
       end
     end
 

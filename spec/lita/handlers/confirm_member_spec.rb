@@ -41,8 +41,8 @@ describe Lita::Handlers::ConfirmMember,
       end
     end
 
-    context "there is a member in the team" do
-      it "confirmed the member and displays a message" do
+    context "there is a unconfirmed member in the team" do
+      it "confirmes the member and displays a message" do
         send_command "create testing team"
         send_command "testing team add john"
         send_command "testing team add james"
@@ -52,8 +52,8 @@ describe Lita::Handlers::ConfirmMember,
       end
     end
 
-    context "there are two or more members in the team" do
-      it "confirmed the member and displays a message" do
+    context "there are two or more unconfirmed members in the team" do
+      it "confirmes the member and displays a message" do
         send_command "create testing team"
         send_command "testing team add john"
         send_command "testing team add mel"

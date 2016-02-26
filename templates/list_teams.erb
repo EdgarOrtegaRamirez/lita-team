@@ -1,4 +1,5 @@
 <%= I18n.t("lita.handlers.team.teams_title") %>:
 <% @teams.each do |team| %>
+<%= "#{team[:icon]} " if team[:icon] %>
 <%= team[:name] %> (<%= team[:members].count %> :bust_in_silhouette:)
 <% end %>

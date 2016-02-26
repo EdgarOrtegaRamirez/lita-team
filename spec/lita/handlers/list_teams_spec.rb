@@ -2,16 +2,18 @@ require "spec_helper"
 
 describe Lita::Handlers::ListTeams,
          lita_handler: true,
-         additional_lita_handlers: Lita::Handlers::CreateTeam do
+         additional_lita_handlers: [Lita::Handlers::CreateTeam,
+                                    Lita::Handlers::UpdateTeam] do
   describe "list teams" do
     it "list all teams" do
       send_command "create testing team"
+      send_command "testing team set icon :movie_camera:"
       send_command "create qa team"
       send_command "list teams"
       reply = <<-OUTPUT
 Teams:
 qa (0 :bust_in_silhouette:)
-testing (0 :bust_in_silhouette:)
+:movie_camera: testing (0 :bust_in_silhouette:)
 OUTPUT
       expect(replies.last).to eq(reply)
     end
