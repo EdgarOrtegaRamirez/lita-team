@@ -3,6 +3,7 @@
 
 <%= ":bust_in_silhouette: #{@team[:members].count}" %>
 <%= " | :round_pushpin: " + @team[:location] if @team[:location] %>
+<%= " | :clock1: " + @team[:time] if @team[:time] %>
 <%= " | Max: " + @team[:limit].to_s if @team[:limit] %>
 
 <% if @team[:members].empty? %>

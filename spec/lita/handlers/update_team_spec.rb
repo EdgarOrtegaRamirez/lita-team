@@ -22,6 +22,15 @@ describe Lita::Handlers::UpdateTeam,
       end
     end
 
+    context "set time" do
+      it "set time to a given value" do
+        send_command "create testing team"
+        send_command "testing team set time 9:30pm"
+        expect(replies.last).
+          to eq("testing team time set to 9:30pm")
+      end
+    end
+
     context "set icon" do
       it "set icon to a given value" do
         send_command "create testing team"

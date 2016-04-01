@@ -5,12 +5,13 @@ module Lita
       template_root File.expand_path("../../../../templates", __FILE__)
 
       route(
-        /(\S*) team set (limit|location|icon) (.+)/i,
+        /(\S*) team set (limit|location|time|icon) (.+)/i,
         :update,
         command: true,
         help: {
           "<name> team set limit <value>" => "update team members limit",
           "<name> team set location <value>" => "update team location",
+          "<name> team set time <value>" => "update team time",
           "<name> team set icon <value>" => "update team icon"
         }
       )
@@ -18,6 +19,7 @@ module Lita
       ATTRIBUTES_MAPPING = {
         limit: :to_i,
         location: :to_s,
+        time: :to_s,
         icon: :to_s
       }.freeze
 
