@@ -39,5 +39,6 @@ Lita: <name> team list - list the people in the team
 Lita: <name> team show - list the people in the team
 Lita: <name> team set limit <value> - update team members limit
 Lita: <name> team set location <value> - update team location
+Lita: <name> team set time <value> - update team time
 Lita: <name> team set icon <value> - update team icon
 ```
