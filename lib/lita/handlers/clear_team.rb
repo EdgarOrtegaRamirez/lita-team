@@ -5,7 +5,7 @@ module Lita
       template_root File.expand_path("../../../../templates", __FILE__)
 
       route(
-        /(\S*) team (clear|empty)/i,
+        /(\S*) team (clear|empty)$/i,
         :clear,
         command: true,
         help: {
